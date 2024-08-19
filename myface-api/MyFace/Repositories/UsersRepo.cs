@@ -2,6 +2,10 @@
 using System.Linq;
 using MyFace.Models.Database;
 using MyFace.Models.Request;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System;
+using System.Threading.Tasks;
 
 namespace MyFace.Repositories
 {
@@ -13,8 +17,9 @@ namespace MyFace.Repositories
         User Create(CreateUserRequest newUser);
         User Update(int id, UpdateUserRequest update);
         void Delete(int id);
+        Task<User> Authenticate(string username, string Salt);
     }
-    
+
     public class UsersRepo : IUsersRepo
     {
         private readonly MyFaceDbContext _context;
@@ -23,11 +28,11 @@ namespace MyFace.Repositories
         {
             _context = context;
         }
-        
+
         public IEnumerable<User> Search(UserSearchRequest search)
         {
             return _context.Users
-                .Where(p => search.Search == null || 
+                .Where(p => search.Search == null ||
                             (
                                 p.FirstName.ToLower().Contains(search.Search) ||
                                 p.LastName.ToLower().Contains(search.Search) ||
@@ -42,7 +47,7 @@ namespace MyFace.Repositories
         public int Count(UserSearchRequest search)
         {
             return _context.Users
-                .Count(p => search.Search == null || 
+                .Count(p => search.Search == null ||
                             (
                                 p.FirstName.ToLower().Contains(search.Search) ||
                                 p.LastName.ToLower().Contains(search.Search) ||
@@ -59,12 +64,25 @@ namespace MyFace.Repositories
 
         public User Create(CreateUserRequest newUser)
         {
+            // ---- Need to refactor this since we are doing this in the sampleuser generator as well -----
+            byte[] salt = new byte[128 / 8];
+            using (var rngCsp = new RNGCryptoServiceProvider())
+            {
+                rngCsp.GetNonZeroBytes(salt);
+            }
             var insertResponse = _context.Users.Add(new User
             {
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
                 Email = newUser.Email,
                 Username = newUser.Username,
+                Salt = Convert.ToBase64String(salt),
+                Hashed_Password = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: newUser.User_Password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8)),
                 ProfileImageUrl = newUser.ProfileImageUrl,
                 CoverImageUrl = newUser.CoverImageUrl,
             });
@@ -95,6 +113,12 @@ namespace MyFace.Repositories
             var user = GetById(id);
             _context.Users.Remove(user);
             _context.SaveChanges();
+        }
+
+        public Task<User> Authenticate(string username, string password)
+        {
+            Console.WriteLine($"user: {username}, password: {password}");
+            throw new NotImplementedException();
         }
     }
 }

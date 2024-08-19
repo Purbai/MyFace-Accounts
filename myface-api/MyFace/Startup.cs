@@ -6,15 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyFace.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFace
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+
 
         public IConfiguration Configuration { get; }
 
@@ -39,6 +38,15 @@ namespace MyFace
             });
 
             services.AddControllers();
+            services.AddAuthentication("BasicAuthentication")
+        .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+            services.AddScoped<IUsersRepo, UsersRepo>();
+/*             public Startup(IConfiguration configuration)
+            {
+                Configuration = configuration;
+            } */
+
 
             services.AddTransient<IInteractionsRepo, InteractionsRepo>();
             services.AddTransient<IPostsRepo, PostsRepo>();
@@ -60,7 +68,11 @@ namespace MyFace
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseRouting(); 
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseCors(CORS_POLICY_NAME);
 

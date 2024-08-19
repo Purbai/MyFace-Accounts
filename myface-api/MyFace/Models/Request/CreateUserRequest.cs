@@ -20,6 +20,14 @@ namespace MyFace.Models.Request
         [StringLength(70)]
         public string Username { get; set; }
         
+        [Required]
+        [StringLength(132, MinimumLength = 16)]
+        public string User_Password { get; set; }
+
+        //[Required]
+        [StringLength(132)]
+        public string Salt { get; set; }
+
         public string ProfileImageUrl { get; set; }
         
         public string CoverImageUrl { get; set; }

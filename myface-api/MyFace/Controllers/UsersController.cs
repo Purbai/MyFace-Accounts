@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -6,6 +7,9 @@ using MyFace.Repositories;
 namespace MyFace.Controllers
 {
     [ApiController]
+    [Authorize]
+    ["Authorization" : Basic{"kplacido0"}:{"kplacido0"}]
+    // [BasicAuthentication( username,password )]
     [Route("/users")]
     public class UsersController : ControllerBase
     {
