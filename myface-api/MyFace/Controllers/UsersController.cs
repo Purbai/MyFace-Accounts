@@ -7,8 +7,8 @@ using MyFace.Repositories;
 namespace MyFace.Controllers
 {
     [ApiController]
-    [Authorize]
-    ["Authorization" : Basic{"kplacido0"}:{"kplacido0"}]
+    //[Authorize]
+    //["Authorization" : Basic{"kplacido0"}:{"kplacido0"}]
     // [BasicAuthentication( username,password )]
     [Route("/users")]
     public class UsersController : ControllerBase
@@ -19,7 +19,8 @@ namespace MyFace.Controllers
         {
             _users = users;
         }
-        
+
+        [Authorize]
         [HttpGet("")]
         public ActionResult<UserListResponse> Search([FromQuery] UserSearchRequest searchRequest)
         {
@@ -35,6 +36,7 @@ namespace MyFace.Controllers
             return new UserResponse(user);
         }
 
+        //[Authorize]
         [HttpPost("create")]
         public IActionResult Create([FromBody] CreateUserRequest newUser)
         {
@@ -42,7 +44,7 @@ namespace MyFace.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var user = _users.Create(newUser);
 
             var url = Url.Action("GetById", new { id = user.Id });
@@ -50,6 +52,7 @@ namespace MyFace.Controllers
             return Created(url, responseViewModel);
         }
 
+        //[Authorize]
         [HttpPatch("{id}/update")]
         public ActionResult<UserResponse> Update([FromRoute] int id, [FromBody] UpdateUserRequest update)
         {
@@ -61,7 +64,8 @@ namespace MyFace.Controllers
             var user = _users.Update(id, update);
             return new UserResponse(user);
         }
-        
+
+        //[Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {

@@ -7,17 +7,17 @@ using MyFace.Repositories;
 namespace MyFace.Controllers
 {
     [ApiController]
-    [Authorize]
+
     [Route("/posts")]
     public class PostsController : ControllerBase
-    {    
+    {
         private readonly IPostsRepo _posts;
 
         public PostsController(IPostsRepo posts)
         {
             _posts = posts;
         }
-        
+
         [HttpGet("")]
         public ActionResult<PostListResponse> Search([FromQuery] PostSearchRequest searchRequest)
         {
@@ -33,6 +33,7 @@ namespace MyFace.Controllers
             return new PostResponse(post);
         }
 
+        [Authorize]
         [HttpPost("create")]
         public IActionResult Create([FromBody] CreatePostRequest newPost)
         {
@@ -40,7 +41,7 @@ namespace MyFace.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var post = _posts.Create(newPost);
 
             var url = Url.Action("GetById", new { id = post.Id });
@@ -48,6 +49,7 @@ namespace MyFace.Controllers
             return Created(url, postResponse);
         }
 
+        [Authorize]
         [HttpPatch("{id}/update")]
         public ActionResult<PostResponse> Update([FromRoute] int id, [FromBody] UpdatePostRequest update)
         {
@@ -60,6 +62,7 @@ namespace MyFace.Controllers
             return new PostResponse(post);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {

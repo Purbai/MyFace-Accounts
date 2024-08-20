@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 namespace MyFace.Repositories
 {
@@ -17,7 +18,8 @@ namespace MyFace.Repositories
         User Create(CreateUserRequest newUser);
         User Update(int id, UpdateUserRequest update);
         void Delete(int id);
-        Task<User> Authenticate(string username, string Salt);
+        //Task<User> Authenticate(string username, string Salt);
+        User Authenticate(string username, string Salt);
     }
 
     public class UsersRepo : IUsersRepo
@@ -115,10 +117,39 @@ namespace MyFace.Repositories
             _context.SaveChanges();
         }
 
-        public Task<User> Authenticate(string username, string password)
+        //public Task<User> Authenticate(string username, string password)
+        public User Authenticate(string username, string passwd)
         {
-            Console.WriteLine($"user: {username}, password: {password}");
+            // search for user - check if the user is in the userlist
+            UserSearchRequest searchUser = new UserSearchRequest();
+            searchUser.Search = username;
+            // if user is return then check the password else not ok
+            List<User> searchResult = Search(searchUser).ToList();
+            string checkPWD = "";
+            Console.WriteLine($"Authencating - checking password ....user = {username}, password = {passwd}");
+            foreach (var user in searchResult)
+            {
+                checkPWD = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: passwd,
+                    //salt: System.Text.Encoding.UTF8.GetBytes(user.Salt),
+                    salt: Convert.FromBase64String(user.Salt),
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8));
+                Console.WriteLine($"looping and checking searchResults - {user.Username}, {System.Text.Encoding.UTF8.GetBytes(user.Salt)}, {user.Salt}, {user.Hashed_Password}, {checkPWD}");
+                if (checkPWD == user.Hashed_Password)
+                {
+                    Console.WriteLine("hash pwd and pwd matches ....");
+                    // fetch the user
+                    // return the user
+                    return user;
+                }
+            }
+
+            return null;
+
             throw new NotImplementedException();
+
         }
     }
 }

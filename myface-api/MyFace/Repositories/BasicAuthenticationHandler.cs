@@ -48,8 +48,10 @@ namespace MyFace.Repositories
                 var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
                 var username = credentials[0];
                 var password = credentials[1];
-                user = await _userRepo.Authenticate(username, password);
-                //Console.WriteLine($"username = {username}, password = {password}, credentials {credentials}");
+                //user = await _userRepo.Authenticate(username, password);
+                Console.WriteLine($"username = {username}, password = {password}, credentials {credentials}");
+                user = _userRepo.Authenticate(username, password);
+                
             }
 
             catch
