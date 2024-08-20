@@ -49,7 +49,7 @@ namespace MyFace.Repositories
                 var username = credentials[0];
                 var password = credentials[1];
                 //user = await _userRepo.Authenticate(username, password);
-                Console.WriteLine($"username = {username}, password = {password}, credentials {credentials}");
+                //Console.WriteLine($"username = {username}, password = {password}, credentials {credentials}");
                 user = _userRepo.Authenticate(username, password);
                 
             }

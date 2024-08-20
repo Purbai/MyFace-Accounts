@@ -45,6 +45,17 @@ namespace MyFace.Repositories
                 .Skip((search.Page - 1) * search.PageSize)
                 .Take(search.PageSize);
         }
+                public IEnumerable<User> SearchExact(UserSearchRequest search)
+        {
+            return _context.Users
+                .Where(p => search.Search == null ||
+                            (   
+                                p.Username.ToLower().Equals(search.Search)
+                            ))
+                .OrderBy(u => u.Username)
+                .Skip((search.Page - 1) * search.PageSize)
+                .Take(search.PageSize);
+        }
 
         public int Count(UserSearchRequest search)
         {
@@ -124,9 +135,9 @@ namespace MyFace.Repositories
             UserSearchRequest searchUser = new UserSearchRequest();
             searchUser.Search = username;
             // if user is return then check the password else not ok
-            List<User> searchResult = Search(searchUser).ToList();
+            List<User> searchResult = SearchExact(searchUser).ToList();
             string checkPWD = "";
-            Console.WriteLine($"Authencating - checking password ....user = {username}, password = {passwd}");
+            //Console.WriteLine($"Authencating - checking password ....user = {username}, password = {passwd}");
             foreach (var user in searchResult)
             {
                 checkPWD = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -136,12 +147,10 @@ namespace MyFace.Repositories
                     prf: KeyDerivationPrf.HMACSHA256,
                     iterationCount: 100000,
                     numBytesRequested: 256 / 8));
-                Console.WriteLine($"looping and checking searchResults - {user.Username}, {System.Text.Encoding.UTF8.GetBytes(user.Salt)}, {user.Salt}, {user.Hashed_Password}, {checkPWD}");
+                //Console.WriteLine($"looping and checking searchResults - {user.Username}, {user.Salt}, {user.Hashed_Password}, {checkPWD}");
                 if (checkPWD == user.Hashed_Password)
                 {
-                    Console.WriteLine("hash pwd and pwd matches ....");
-                    // fetch the user
-                    // return the user
+                    //Console.WriteLine("hash pwd and pwd matches ....");
                     return user;
                 }
             }
