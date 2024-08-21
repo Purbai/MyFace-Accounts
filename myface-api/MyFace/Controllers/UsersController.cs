@@ -52,7 +52,7 @@ namespace MyFace.Controllers
             return Created(url, responseViewModel);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPatch("{id}/update")]
         public ActionResult<UserResponse> Update([FromRoute] int id, [FromBody] UpdateUserRequest update)
         {
@@ -65,7 +65,7 @@ namespace MyFace.Controllers
             return new UserResponse(user);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {

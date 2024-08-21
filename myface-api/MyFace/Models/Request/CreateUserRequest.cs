@@ -21,7 +21,7 @@ namespace MyFace.Models.Request
         public string Username { get; set; }
         
         [Required]
-        [StringLength(132, MinimumLength = 16)]
+        [StringLength(132)]
         public string User_Password { get; set; }
 
         //[Required]

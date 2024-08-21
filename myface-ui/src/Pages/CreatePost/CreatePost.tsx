@@ -6,6 +6,13 @@ import "./CreatePost.scss";
 
 type FormStatus = "READY" | "SUBMITTING" | "ERROR" | "FINISHED"
 
+interface LoginProps {
+    username: string;
+    setUsername: (username: string) => void;
+    password: string;
+    setPassword: (password: string) => void;
+}
+
 export function CreatePostForm(): JSX.Element {
     const [message, setMessage] = useState("");
     const [imageUrl, setImageUrl] = useState("");
@@ -50,7 +57,7 @@ export function CreatePostForm(): JSX.Element {
     );
 }
 
-export function CreatePost(): JSX.Element {
+export function CreatePost(props: LoginProps ): JSX.Element {
     return (
         <Page containerClassName="create-post-page">
             <h1 className="title">Create Post</h1>

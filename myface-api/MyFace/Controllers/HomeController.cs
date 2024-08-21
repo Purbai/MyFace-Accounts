@@ -16,6 +16,7 @@ namespace MyFace.Controllers
                 {"/posts", "for information on posts."},
                 {"/interactions", "for information about the interactions between users and posts"},
                 {"/feeds", "all the data required to build a 'feed' of posts."},
+                {"/login", "Login page"},
             };
         }
     }

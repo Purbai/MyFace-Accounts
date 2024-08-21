@@ -6,8 +6,6 @@ export function Header(): JSX.Element {
     return (
         <header className="header">
             <NavLink className="home-link" to="/">MyFace</NavLink>
-            b
-            This is where we want to put the header authorization details
         </header>
     );
 }
