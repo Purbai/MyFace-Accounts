@@ -18,16 +18,19 @@ export function Login(props: LoginProps): JSX.Element {
 
     function tryLogin(event: FormEvent) {
         event.preventDefault();
-        console.log("testing - inside trylogin ......");
-        console.log(`username = ${props.username} , password = ${props.password}, setusername = ${props.setUsername}, setpassword = ${props.setPassword}`);
+        //console.log("testing - inside trylogin ......");
+        //console.log(`username = ${props.username} , password = ${props.password}, setusername = ${props.setUsername}, setpassword = ${props.setPassword}`);
         // API to fetch our user
         const loginResult = fetchLogin(props.username, props.password)
-        console.log(`checking the results after the fetchloginapi call .... ${loginResult}`)
-        if (loginResult != null) {
+        //console.log(`checking the results after the fetchloginapi call .... ${loginResult}`)
+        if (!loginResult == null) {
             // valid user
+            //loginContext.headerDetails(`Authorization: Basic ${btoa(props.username + ":" + props.password)}`)
+            console.log(`headerdetail .... ${loginContext.headerDetails}`);
             loginContext.logIn();
         }
         else {
+            //loginContext.headerDetails(`Authorization: Basic :`)
             // else the user is not valid
             loginContext.logOut();
         }

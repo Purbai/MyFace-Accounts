@@ -47,10 +47,10 @@ export async function fetchLogin(username: string, password: string)  {
     let encodedString = btoa(`${username}:${password}`);
     // console.log (`encoded string = ${encodedString}`);
     const urlString = `https://localhost:5001/login`
-    console.log(`inside fetchlogin  .... user = ${username}, passwd = ${password}, urlstring = ${urlString}`)
+    //console.log(`inside fetchlogin  .... urlstring = ${urlString}`)
     const response = await fetch(urlString,
         {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Authorization" : `Basic ${encodedString}`,
                 "Content-Type": "application/json"
@@ -59,7 +59,12 @@ export async function fetchLogin(username: string, password: string)  {
     );
     
     if (!response.ok) {
-        throw new Error(await response.json())
+        throw new Error(await response.json());
+    }
+    else
+    {
+        //return await response.json();
+        console.log(`All ok with the API call ... response is ${response.json}`)
     }
     // return await response.json();
 

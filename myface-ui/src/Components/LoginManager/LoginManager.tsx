@@ -3,8 +3,10 @@
 export const LoginContext = createContext({
     isLoggedIn: false,
     isAdmin: false,
+    headerDetails: (authString: string) =>{},
     logIn: () => {},
     logOut: () => {},
+    //header:"",
 });
 
 interface LoginManagerProps {
@@ -13,6 +15,7 @@ interface LoginManagerProps {
 
 export function LoginManager(props: LoginManagerProps): JSX.Element {
     const [loggedIn, setLoggedIn] = useState(true);
+    const [header,setHeader] = useState("");
     
     function logIn() {
         setLoggedIn(true);
@@ -21,10 +24,15 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
     function logOut() {
         setLoggedIn(false);
     }
+
+    function headerDetails(authString:string) {
+        setHeader(authString);
+    }
     
     const context = {
         isLoggedIn: loggedIn,
         isAdmin: loggedIn,
+        headerDetails : headerDetails,
         logIn: logIn,
         logOut: logOut,
     };
